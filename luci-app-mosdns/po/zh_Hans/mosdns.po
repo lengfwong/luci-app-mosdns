@@ -77,6 +77,12 @@ msgstr "DNS 转发"
 msgid "Forward Dnsmasq Domain Name resolution requests to MosDNS"
 msgstr "将 Dnsmasq 域名解析请求转发到 MosDNS 服务器"
 
+msgid "DNS redirect"
+msgstr "DNS 重定向"
+
+msgid "Force redirect all local DNS queries to MosDNS, a.k.a. DNS Hijacking"
+msgstr "强制将所有本地 DNS 查询重定向到 MosDNS，即 DNS 劫持。"
+
 msgid "Enable DNS ADblock"
 msgstr "启用 DNS 广告过滤"
 
