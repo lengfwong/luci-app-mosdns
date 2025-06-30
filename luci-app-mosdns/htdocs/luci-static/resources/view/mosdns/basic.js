@@ -168,6 +168,11 @@ return view.extend({
 			o.depends('redirect', '1');
 		}
 
+		o = s.taboption('basic', form.Flag, 'prefer_ipv4_cn', _('China DNS prefer IPv4'),
+			_('IPv4 is preferred for China DNS resolution of dual-stack addresses, and is not affected when the destination is IPv6 only'));
+		o.depends('configfile', '/var/etc/mosdns.json');
+		o.default = false;
+
 		o = s.taboption('basic', form.Flag, 'prefer_ipv4', _('Remote DNS prefer IPv4'),
 			_('IPv4 is preferred for Remote / Streaming Media DNS resolution of dual-stack addresses, and is not affected when the destination is IPv6 only'));
 		o.depends('configfile', '/var/etc/mosdns.json');
