@@ -14,6 +14,9 @@
 				"/etc/mosdns/rule/redirect.txt": [ "read" ],
 				"/etc/mosdns/rule/streaming.txt": [ "read" ],
 				"/etc/mosdns/rule/whitelist.txt": [ "read" ],
+				"/etc/mosdns/rule/gfwplus_list.txt": [ "read" ],
+				"/etc/mosdns/rule/remotelist.txt": [ "read" ],
+				"/etc/mosdns/rule/excludegfw.txt": [ "read" ],
 				"/usr/bin/mosdns": [ "exec" ],
 				"/usr/share/mosdns/mosdns.sh": [ "exec" ]
 			},
@@ -34,7 +37,10 @@
 				"/etc/mosdns/rule/local-ptr.txt": [ "write" ],
 				"/etc/mosdns/rule/redirect.txt": [ "write" ],
 				"/etc/mosdns/rule/streaming.txt": [ "write" ],
-				"/etc/mosdns/rule/whitelist.txt": [ "write" ]
+				"/etc/mosdns/rule/whitelist.txt": [ "write" ],
+				"/etc/mosdns/rule/gfwplus_list.txt": [ "write" ],
+				"/etc/mosdns/rule/remotelist.txt": [ "write" ],
+				"/etc/mosdns/rule/excludegfw.txt": [ "write" ]
 			},
 			"ubus": {
 				"file": [ "write" ]
@@ -43,4 +49,3 @@
 		}
 	}
 }
-

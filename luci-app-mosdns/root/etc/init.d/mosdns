@@ -744,7 +744,7 @@ start_service() {
 	config_load "mosdns"
 	config_foreach get_config "mosdns"
 	[ $enabled -ne 1 ] && return 1
-	delcron ; setcron
+	#delcron ; setcron
 	:> $($MOSDNS_SCRIPT logfile)
 	if [ "${log_level}" = "error" ] || [ "${log_level}" = "warn" ]; then
 		v2dat_dump > /dev/null 2>&1
@@ -801,5 +801,5 @@ stop_service() {
 	! nft --check list table inet mosdns > "/dev/null" 2>&1 || \
 		nft delete table inet mosdns
 	reload_dnsmasq
-	delcron
+	#delcron
 }
