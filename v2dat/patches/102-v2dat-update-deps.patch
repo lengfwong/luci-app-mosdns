@@ -1,0 +1,49 @@
+From 2ed72005c455bcb8be4c145437b3cceb1f23bdfc Mon Sep 17 00:00:00 2001
+From: lengfwong <sxttwyf@gmail.com>
+Date: Sun, 20 Jul 2025 11:40:35 +0800
+Subject: [PATCH] update deps
+
+---
+ go.mod | 4 ++--
+ go.sum | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/go.mod b/go.mod
+index 06827ab..e29bc23 100644
+--- a/go.mod
++++ b/go.mod
+@@ -1,6 +1,6 @@
+ module github.com/urlesistiana/v2dat
+ 
+-go 1.22
++go 1.24
+ 
+ require (
+ 	github.com/spf13/cobra v1.9.1
+@@ -9,7 +9,7 @@ require (
+ )
+ 
+ require (
+-	github.com/google/go-cmp v0.5.9 // indirect
++	github.com/google/go-cmp v0.7.0 // indirect
+ 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+ 	github.com/spf13/pflag v1.0.6 // indirect
+ 	go.uber.org/multierr v1.11.0 // indirect
+diff --git a/go.sum b/go.sum
+index ef11ef6..2e518ba 100644
+--- a/go.sum
++++ b/go.sum
+@@ -1,8 +1,8 @@
+ github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
+ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
+ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+-github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
+-github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
++github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
++github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
+ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
+ github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
+ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+-- 
+2.43.0
+
