@@ -133,6 +133,11 @@ geodat_update() (
         rm -rf "$TMPDIR"
         exit 1
     fi
+
+    #Add apple-cn.txt download.
+    echo -e "Downloading "$mirror"https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/apple-cn.txt"
+    curl --connect-timeout 5 -m 120 --ipv4 -kfSLo "/etc/mosdns/rule/apple-cn.txt" ""$mirror"https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/apple-cn.txt"
+
     rm -rf "$TMPDIR"/*.sha256sum
     \cp -a "$TMPDIR"/* /usr/share/v2ray
     rm -rf "$TMPDIR"
@@ -143,7 +148,8 @@ restart_service() {
 }
 
 flush_cache() {
-    curl -s 127.0.0.1:$(uci -q get mosdns.config.listen_port_api)/plugins/lazy_cache/flush || exit 1
+    # In custem config situation, using "uci -q get mosdns.config.listen_port_api" cann't get api port.
+    curl -s 127.0.0.1:9091/plugins/lazy_cache/flush || exit 1
 }
 
 v2dat_dump() {
@@ -170,6 +176,12 @@ v2dat_dump() {
         geosite_tags=$(uci -q get mosdns.config.geosite_tags)
         [ -n "$geoip_tags" ] && v2dat unpack geoip -o /var/mosdns $(echo $geoip_tags | sed -r 's/\S+/-f &/g') $v2dat_dir/geoip.dat
         [ -n "$geosite_tags" ] && v2dat unpack geosite -o /var/mosdns $(echo $geosite_tags | sed -r 's/\S+/-f &/g') $v2dat_dir/geosite.dat
+
+        # exclude special lists from geosite_gfw.txt
+        sed -i -e  '/^#/d;/^$/d' "/etc/mosdns/rule/excludegfw.txt"
+        while read -r line; do
+        sed -i   "/^$line$/d" "/var/mosdns/geosite_gfw.txt"
+        done <"/etc/mosdns/rule/excludegfw.txt"
     fi
 }
 
