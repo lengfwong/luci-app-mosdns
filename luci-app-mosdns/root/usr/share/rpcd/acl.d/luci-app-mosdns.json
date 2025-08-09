@@ -16,6 +16,7 @@
 				"/etc/mosdns/rule/whitelist.txt": [ "read" ],
 				"/etc/mosdns/rule/gfwplus_list.txt": [ "read" ],
 				"/etc/mosdns/rule/remotelist.txt": [ "read" ],
+				"/etc/mosdns/rule/knownlist.txt": [ "read" ],
 				"/etc/mosdns/rule/excludegfw.txt": [ "read" ],
 				"/usr/bin/mosdns": [ "exec" ],
 				"/usr/share/mosdns/mosdns.sh": [ "exec" ]
@@ -40,6 +41,7 @@
 				"/etc/mosdns/rule/whitelist.txt": [ "write" ],
 				"/etc/mosdns/rule/gfwplus_list.txt": [ "write" ],
 				"/etc/mosdns/rule/remotelist.txt": [ "write" ],
+				"/etc/mosdns/rule/knownlist.txt": [ "write" ],
 				"/etc/mosdns/rule/excludegfw.txt": [ "write" ]
 			},
 			"ubus": {

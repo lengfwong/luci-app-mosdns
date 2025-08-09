@@ -21,6 +21,7 @@ return view.extend({
 		s.tab('gfwpluslist', _('GfwPlusLists'));
 		s.tab('remotequerylist', _('RemoteQueryLists'));
 		s.tab('streamingmedialist', _('Streaming Media'));
+		s.tab('knownlist', _('Known Lists'));
 		s.tab('ddnslist', _('DDNS Lists'));
 		s.tab('hostslist', _('Hosts'));
 		s.tab('redirectlist', _('Redirect'));
@@ -270,7 +271,7 @@ return view.extend({
 		o = s.taboption('excludegfwlist', form.TextValue, '_excludegfwlist',
 			null,
 			'<font color=\'red\'>'
-			+ _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, use full domain ).')
+			+ _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, supports domain matching rules).')
 			+ '</font>'
 		);
 		o.rows = 25;
@@ -285,6 +286,30 @@ return view.extend({
 					return;
 				}
 				return fs.write('/etc/mosdns/rule/excludegfw.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+					.catch(function (e) {
+						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+					});
+			});
+		};
+
+		o = s.taboption('knownlist', form.TextValue, '_knownlist',
+			null,
+			'<font color=\'red\'>'
+			+ _('Known domain lists, forward to local DNS query(one domain per line, supports domain matching rules).')
+			+ '</font>'
+		);
+		o.rows = 25;
+		o.cfgvalue = function (section_id) {
+			return fs.trimmed('/etc/mosdns/rule/knownlist.txt').catch(function (e) {
+				return "";
+			});
+		};
+		o.write = function (section_id, formvalue) {
+			return this.cfgvalue(section_id).then(function (value) {
+				if (value == formvalue) {
+					return;
+				}
+				return fs.write('/etc/mosdns/rule/knownlist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
