@@ -3,19 +3,27 @@
 'require fs';
 'require ui';
 'require view';
+'require rpc';
+
+var callUpdate = rpc.declare({
+	object: 'luci.mosdns',
+	method: 'update_remote_resources',
+	expect: { '': {} }
+});
 
 return view.extend({
-	handleUpdate: function (m, section_id, ev) {
-		return fs.exec('/usr/share/mosdns/mosdns.sh', ['geodata'])
-			.then(function (i) {
-				var res = i.code;
-				if (res === 0) {
-					ui.addNotification(null, E('p', _('Update success')), 'info');
-				} else {
-					ui.addNotification(null, E('p', i.stderr + '<br />' + i.stdout), 'warn');
-					ui.addNotification(null, E('p', _('Update failed, Please check the network status')), 'error');
-				}
-			});
+	handleUpdate: function () {
+		ui.showModal(_('Updating...'), [
+			E('p', { 'class': 'spinning' }, _('Please wait, this may take a few moments...')),
+		]);
+		return callUpdate().then(function (res) {
+			ui.hideModal();
+			if (res.success) {
+				ui.addNotification(null, E('p', res.message || _('Update success')), 'info');
+			} else {
+				ui.addNotification(null, E('p', res.message || _('Update failed, Please check the network status')), 'error');
+			}
+		});
 	},
 
 	render: function () {
@@ -68,7 +76,7 @@ return view.extend({
 		o.title = _('Database Update');
 		o.inputtitle = _('Check And Update');
 		o.inputstyle = 'apply';
-		o.onclick = L.bind(this.handleUpdate, this, m);
+		o.onclick = L.bind(this.handleUpdate, this);
 
 		return m.render();
 	}
