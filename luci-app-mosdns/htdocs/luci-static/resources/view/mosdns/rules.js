@@ -28,6 +28,7 @@ return view.extend({
 		s.tab('localptrlist', _('Block PTR'));
 		s.tab('excludegfwlist', _('ExcludeGfwlists'));
 
+		// --- White Lists ---
 		o = s.taboption('whitelist', form.TextValue, '_whitelist',
 			null,
 			'<font color=\'red\'>'
@@ -45,13 +46,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/whitelist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/whitelist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/whitelist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Block Lists ---
 		o = s.taboption('blocklist', form.TextValue, '_blocklist',
 			null,
 			'<font color=\'red\'>'
@@ -69,13 +76,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/blocklist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/blocklist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/blocklist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Grey Lists ---
 		o = s.taboption('greylist', form.TextValue, '_greylist',
 			null,
 			'<font color=\'red\'>'
@@ -93,13 +106,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/greylist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/greylist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/greylist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- DDNS Lists ---
 		o = s.taboption('ddnslist', form.TextValue, '_ddnslist',
 			null,
 			'<font color=\'red\'>'
@@ -117,13 +136,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/ddnslist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/ddnslist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/ddnslist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Hosts ---
 		o = s.taboption('hostslist', form.TextValue, '_hostslist',
 			null,
 			'<font color=\'red\'>'
@@ -141,13 +166,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/hosts.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/hosts.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/hosts.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Redirect ---
 		o = s.taboption('redirectlist', form.TextValue, '_redirectlist',
 			null,
 			'<font color=\'red\'>'
@@ -165,13 +196,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/redirect.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/redirect.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/redirect.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Block PTR ---
 		o = s.taboption('localptrlist', form.TextValue, '_localptrlist',
 			null,
 			'<font color=\'red\'>'
@@ -189,13 +226,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/local-ptr.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/local-ptr.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/local-ptr.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Streaming Media ---
 		o = s.taboption('streamingmedialist', form.TextValue, '_streamingmedialist',
 			null,
 			'<font color=\'red\'>'
@@ -213,13 +256,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/streaming.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/streaming.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/streaming.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Gfwlist plus ---
 		o = s.taboption('gfwpluslist', form.TextValue, '_gfwpluslist',
 			null,
 			'<font color=\'red\'>'
@@ -237,13 +286,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/gfwplus_list.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/gfwplus_list.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/gfwplus_list.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Remote Query ---
 		o = s.taboption('remotequerylist', form.TextValue, '_remotequerylist',
 			null,
 			'<font color=\'red\'>'
@@ -261,13 +316,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/remotelist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/remotelist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/remotelist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Exclude Gfwlist ---
 		o = s.taboption('excludegfwlist', form.TextValue, '_excludegfwlist',
 			null,
 			'<font color=\'red\'>'
@@ -285,13 +346,19 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/excludegfw.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/excludegfw.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
 			});
 		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/excludegfw.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
 
+		// --- Know List ---
 		o = s.taboption('knownlist', form.TextValue, '_knownlist',
 			null,
 			'<font color=\'red\'>'
@@ -309,10 +376,15 @@ return view.extend({
 				if (value == formvalue) {
 					return;
 				}
-				return fs.write('/etc/mosdns/rule/knownlist.txt', formvalue.trim().replace(/\r\n/g, '\n') + '\n')
+				return fs.write('/etc/mosdns/rule/knownlist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
 					.catch(function (e) {
 						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 					});
+			});
+		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/knownlist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 			});
 		};
 
