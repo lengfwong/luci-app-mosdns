@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-19 20:16+0800\n"
+"POT-Creation-Date: 2026-03-20 09:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -656,117 +656,122 @@ msgstr ""
 msgid "Failed to restart mosdns: %s"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:16
+#: htdocs/luci-static/resources/view/mosdns/update.js:9
 msgid "Updating..."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:17
+#: htdocs/luci-static/resources/view/mosdns/update.js:10
 msgid "Please wait, this may take a few moments..."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:22
+#: htdocs/luci-static/resources/view/mosdns/update.js:16
 msgid "Update success"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:24
+#: htdocs/luci-static/resources/view/mosdns/update.js:19
 msgid "Update failed, Please check the network status"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:32
+#: htdocs/luci-static/resources/view/mosdns/update.js:23
+#, javascript-format
+msgid "Update failed: %s"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/mosdns/update.js:30
 msgid "Update GeoIP & GeoSite databases"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:33
+#: htdocs/luci-static/resources/view/mosdns/update.js:31
 msgid ""
 "Automatically update GeoIP and GeoSite databases as well as ad filtering "
 "rules through scheduled tasks."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:38
+#: htdocs/luci-static/resources/view/mosdns/update.js:36
 msgid "Enable Auto Database Update"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:41
+#: htdocs/luci-static/resources/view/mosdns/update.js:39
 msgid "Update Cycle"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:42
+#: htdocs/luci-static/resources/view/mosdns/update.js:40
 msgid "Every Day"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:43
+#: htdocs/luci-static/resources/view/mosdns/update.js:41
 msgid "Every Monday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:44
+#: htdocs/luci-static/resources/view/mosdns/update.js:42
 msgid "Every Tuesday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:45
+#: htdocs/luci-static/resources/view/mosdns/update.js:43
 msgid "Every Wednesday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:46
+#: htdocs/luci-static/resources/view/mosdns/update.js:44
 msgid "Every Thursday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:47
+#: htdocs/luci-static/resources/view/mosdns/update.js:45
 msgid "Every Friday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:48
+#: htdocs/luci-static/resources/view/mosdns/update.js:46
 msgid "Every Saturday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:49
+#: htdocs/luci-static/resources/view/mosdns/update.js:47
 msgid "Every Sunday"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:52
+#: htdocs/luci-static/resources/view/mosdns/update.js:50
 msgid "Update Time"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:58
+#: htdocs/luci-static/resources/view/mosdns/update.js:56
 msgid "GeoIP Type"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:59
+#: htdocs/luci-static/resources/view/mosdns/update.js:57
 msgid "Little: only include Mainland China and Private IP addresses."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:61
+#: htdocs/luci-static/resources/view/mosdns/update.js:59
 msgid "Full: includes all Countries and Private IP addresses."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:63
+#: htdocs/luci-static/resources/view/mosdns/update.js:61
 msgid "Full"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:64
+#: htdocs/luci-static/resources/view/mosdns/update.js:62
 msgid "Little"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:68
+#: htdocs/luci-static/resources/view/mosdns/update.js:66
 msgid "GitHub Proxy"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:69
+#: htdocs/luci-static/resources/view/mosdns/update.js:67
 msgid ""
 "Update data files with GitHub Proxy, leave blank to disable proxy downloads."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:70
+#: htdocs/luci-static/resources/view/mosdns/update.js:68
 msgid "https://gh-proxy.com"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:75
+#: htdocs/luci-static/resources/view/mosdns/update.js:73
 msgid "Check And Update GeoData."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:76
+#: htdocs/luci-static/resources/view/mosdns/update.js:74
 msgid "Database Update"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/update.js:77
+#: htdocs/luci-static/resources/view/mosdns/update.js:75
 msgid "Check And Update"
 msgstr ""

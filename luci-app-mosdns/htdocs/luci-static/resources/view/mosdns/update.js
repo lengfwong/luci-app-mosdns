@@ -3,27 +3,25 @@
 'require fs';
 'require ui';
 'require view';
-'require rpc';
-
-var callUpdate = rpc.declare({
-	object: 'luci.mosdns',
-	method: 'update_remote_resources',
-	expect: { '': {} }
-});
 
 return view.extend({
 	handleUpdate: function () {
 		ui.showModal(_('Updating...'), [
 			E('p', { 'class': 'spinning' }, _('Please wait, this may take a few moments...')),
 		]);
-		return callUpdate().then(function (res) {
-			ui.hideModal();
-			if (res.success) {
-				ui.addNotification(null, E('p', res.message || _('Update success')), 'info');
-			} else {
-				ui.addNotification(null, E('p', res.message || _('Update failed, Please check the network status')), 'error');
-			}
-		});
+		return fs.exec('/usr/share/mosdns/mosdns.uc', ['update'])
+			.then(function (res) {
+				ui.hideModal();
+				if (res.code === 0) {
+					ui.addNotification(null, E('p', _('Update success')), 'info');
+				} else {
+					ui.addNotification(null, E('p', res.stderr + '<br />' + res.stdout), 'warn');
+					ui.addNotification(null, E('p', _('Update failed, Please check the network status')), 'error');
+				}
+			}).catch(function (e) {
+				ui.hideModal();
+				ui.addNotification(null, E('p', _('Update failed: %s').format(e.message)), 'error');
+			});
 	},
 
 	render: function () {
