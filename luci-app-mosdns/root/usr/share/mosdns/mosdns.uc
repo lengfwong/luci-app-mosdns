@@ -256,6 +256,32 @@ function update_geodat() {
 	}
 
 	exec_sys(`rm -rf "${tmpdir}"`);
+
+	let apple_url = mirror + "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/apple-cn.txt";
+	print("Downloading apple-cn.txt.\n");
+	if (exec_sys(`curl --connect-timeout 5 -m 120 --ipv4 -kfSLo "/etc/mosdns/rule/apple-cn.txt" "${apple_url}"`).code !== 0) {
+			print("\x1b[1;31mapple-cn.txt download error\n"); exit(1);
+		} else {
+			print("apple-cn downloaded.\n");
+		}
+}
+
+function filter_geosite_exclude() {
+	const src = "/etc/mosdns/rule/excludegfw.txt";
+	const target = "/var/mosdns/geosite_gfw.txt";
+
+	// 1. 将命令写成一个连续的字符串，内部 sed 使用双引号 "" 避免冲突
+	// 2. 使用 { ... } 替代 if/fi 可以让单行命令更健壮
+	let cmd = `[ -f "${src}" ] && [ -f "${target}" ] && { ` +
+			  `sed "/^#/d;/^$/d" "${src}" > /tmp/exclude_cleaned.tmp; ` +
+			  `if [ -s /tmp/exclude_cleaned.tmp ]; then ` +
+			  `grep -vxFf /tmp/exclude_cleaned.tmp "${target}" > /tmp/gfw_filtered.tmp && mv /tmp/gfw_filtered.tmp "${target}"; ` +
+			  `fi; ` +
+			  `rm -f /tmp/exclude_cleaned.tmp; ` +
+			  `}`;
+
+	// 执行调用
+	exec_sys(`sh -c '${cmd}'`);
 }
 
 function v2dat_dump() {
@@ -301,6 +327,7 @@ function v2dat_dump() {
 			exec_sys(`v2dat unpack geosite -o /var/mosdns ${tags_str} ${v2dat_dir}/geosite.dat`);
 		}
 	}
+	filter_geosite_exclude();
 }
 
 let action = ARGV[0];
