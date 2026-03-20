@@ -1,2 +1,13 @@
 # MosDNS Rules
-
+tanx.com
+#mmstat.com
+beacons5.gvt3.com
+ley2022.net
+tracker.publicbt.com
+public.popcorn-tracker.org
+opentracker.xyz
+text.forge.com
+t.overflow.biz
+9.rarbg.com
+tracker.piratepublic.com
+lb._dns-sd._udp.xtapp.appio.cc

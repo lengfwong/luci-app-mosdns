@@ -1,3 +1,4 @@
+# MosDNS Rules
 0.in-addr.arpa
 10.in-addr.arpa
 127.in-addr.arpa
@@ -83,5 +84,6 @@
 127.100.in-addr.arpa
 2.0.192.in-addr.arpa
 168.192.in-addr.arpa
+6.0.0.192.in-addr.arpa
 255.255.255.255.in-addr.arpa
 domain:ip6.arpa

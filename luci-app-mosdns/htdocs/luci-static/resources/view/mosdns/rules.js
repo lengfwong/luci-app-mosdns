@@ -24,11 +24,15 @@ return view.extend({
 		s.tab('whitelist', _('White Lists'));
 		s.tab('blocklist', _('Block Lists'));
 		s.tab('greylist', _('Grey Lists'));
+		s.tab('gfwpluslist', _('GfwPlusLists'));
+		s.tab('remotequerylist', _('RemoteQueryLists'));
+		s.tab('streamingmedialist', _('Streaming Media'));
+		s.tab('knownlist', _('Known Lists'));
 		s.tab('ddnslist', _('DDNS Lists'));
 		s.tab('hostslist', _('Hosts'));
 		s.tab('redirectlist', _('Redirect'));
 		s.tab('localptrlist', _('Block PTR'));
-		s.tab('streamingmedialist', _('Streaming Media'));
+		s.tab('excludegfwlist', _('ExcludeGfwlists'));
 
 		// --- White Lists ---
 		o = s.taboption('whitelist', form.TextValue, '_whitelist',
@@ -94,7 +98,7 @@ return view.extend({
 		o = s.taboption('greylist', form.TextValue, '_greylist',
 			null,
 			'<font color=\'red\'>'
-			+ _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules).')
+			+ _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and added nftable sets greylist.')
 			+ '</font>'
 		);
 		o.rows = 25;
@@ -124,7 +128,7 @@ return view.extend({
 		o = s.taboption('ddnslist', form.TextValue, '_ddnslist',
 			null,
 			'<font color=\'red\'>'
-			+ _('Added domain names will always use \'Local DNS\' for resolution, with a forced TTL of 5 seconds, and results will not be cached (one domain per line, supports domain matching rules).')
+			+ _('Added domain names will always use \'Local DNS\' for resolution, with a forced TTL of 5 seconds (one domain per line, supports domain matching rules).')
 			+ '</font>'
 		);
 		o.rows = 25;
@@ -266,6 +270,126 @@ return view.extend({
 		};
 		o.remove = function (section_id) {
 			return fs.write('/etc/mosdns/rule/streaming.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
+
+		// --- Gfwlist plus ---
+		o = s.taboption('gfwpluslist', form.TextValue, '_gfwpluslist',
+			null,
+			'<font color=\'red\'>'
+			+ _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and added nftable sets gfwlist.')
+			+ '</font>'
+		);
+		o.rows = 25;
+		o.cfgvalue = function (section_id) {
+			return fs.trimmed('/etc/mosdns/rule/gfwplus_list.txt').catch(function (e) {
+				return "";
+			});
+		};
+		o.write = function (section_id, formvalue) {
+			return this.cfgvalue(section_id).then(function (value) {
+				if (value == formvalue) {
+					return;
+				}
+				return fs.write('/etc/mosdns/rule/gfwplus_list.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
+					.catch(function (e) {
+						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+					});
+			});
+		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/gfwplus_list.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
+
+		// --- Remote Query ---
+		o = s.taboption('remotequerylist', form.TextValue, '_remotequerylist',
+			null,
+			'<font color=\'red\'>'
+			+ _('Added domain names will always use \'Remote DNS\' for resolution, and return IPv4 only (one domain per line, supports domain matching rules).')
+			+ '</font>'
+		);
+		o.rows = 25;
+		o.cfgvalue = function (section_id) {
+			return fs.trimmed('/etc/mosdns/rule/remotelist.txt').catch(function (e) {
+				return "";
+			});
+		};
+		o.write = function (section_id, formvalue) {
+			return this.cfgvalue(section_id).then(function (value) {
+				if (value == formvalue) {
+					return;
+				}
+				return fs.write('/etc/mosdns/rule/remotelist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
+					.catch(function (e) {
+						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+					});
+			});
+		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/remotelist.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
+
+		// --- Exclude Gfwlist ---
+		o = s.taboption('excludegfwlist', form.TextValue, '_excludegfwlist',
+			null,
+			'<font color=\'red\'>'
+			+ _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, supports domain matching rules).')
+			+ '</font>'
+		);
+		o.rows = 25;
+		o.cfgvalue = function (section_id) {
+			return fs.trimmed('/etc/mosdns/rule/excludegfw.txt').catch(function (e) {
+				return "";
+			});
+		};
+		o.write = function (section_id, formvalue) {
+			return this.cfgvalue(section_id).then(function (value) {
+				if (value == formvalue) {
+					return;
+				}
+				return fs.write('/etc/mosdns/rule/excludegfw.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
+					.catch(function (e) {
+						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+					});
+			});
+		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/excludegfw.txt', '').catch(function (e) {
+				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			});
+		};
+
+		// --- Know List ---
+		o = s.taboption('knownlist', form.TextValue, '_knownlist',
+			null,
+			'<font color=\'red\'>'
+			+ _('Known domain lists, forward to local DNS query(one domain per line, supports domain matching rules).')
+			+ '</font>'
+		);
+		o.rows = 25;
+		o.cfgvalue = function (section_id) {
+			return fs.trimmed('/etc/mosdns/rule/knownlist.txt').catch(function (e) {
+				return "";
+			});
+		};
+		o.write = function (section_id, formvalue) {
+			return this.cfgvalue(section_id).then(function (value) {
+				if (value == formvalue) {
+					return;
+				}
+				return fs.write('/etc/mosdns/rule/knownlist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
+					.catch(function (e) {
+						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+					});
+			});
+		};
+		o.remove = function (section_id) {
+			return fs.write('/etc/mosdns/rule/knownlist.txt', '').catch(function (e) {
 				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
 			});
 		};

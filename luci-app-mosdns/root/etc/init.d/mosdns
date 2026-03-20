@@ -773,7 +773,7 @@ start_service() {
 	config_load "mosdns"
 	config_foreach get_config "mosdns"
 	[ $enabled -ne 1 ] && return 1
-	delcron ; setcron
+	#delcron ; #setcron
 
 	rm -rf /tmp/log/mosdns*
 
@@ -835,5 +835,5 @@ stop_service() {
 	! nft --check list table inet mosdns > "/dev/null" 2>&1 || \
 		nft delete table inet mosdns
 	reload_dnsmasq
-	delcron
+	#delcron
 }

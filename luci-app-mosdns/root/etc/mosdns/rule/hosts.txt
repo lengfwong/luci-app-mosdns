@@ -1,2 +1,14 @@
 # MosDNS Rules
-
+time1.aliyun.com 203.107.6.88
+api.miwifi.com 111.13.141.146 117.128.103.241  111.13.141.230 117.128.102.23
+ax6000.lfh.us.kg 192.168.16.8
+opx86.lfh.us.kg 192.168.16.3
+hhpve.dns.navy 192.168.16.1
+hhpve.lfh.xx.kg 192.168.16.1
+hhpve.lfh.us.kg 192.168.16.1
+miros.dns.navy 192.168.16.2
+miros.lfh.xx.kg 192.168.16.2
+miros.lfh.us.kg 192.168.16.2
+winds.dns.navy 192.168.16.6
+winds.lfh.xx.kg 192.168.16.6
+winds.lfh.us.kg 192.168.16.6

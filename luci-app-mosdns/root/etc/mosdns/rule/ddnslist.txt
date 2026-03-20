@@ -1,2 +1,6 @@
 # MosDNS Rules
-
+bzlxzl.com
+byw.lol
+capoonetwork.com
+gtm.dociadd.com
+cn.pool.ntp.org

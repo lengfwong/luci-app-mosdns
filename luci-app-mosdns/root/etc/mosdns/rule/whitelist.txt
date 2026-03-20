@@ -1,2 +1,8 @@
 # MosDNS Rules
-
+#mmstat.com
+#safebrowsing.googleapis.com
+#beacons5.gvt3.com
+cloudflareinsights.com
+log.mmstat.com
+microsoft.com
+office.com

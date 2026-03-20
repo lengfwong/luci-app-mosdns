@@ -1,0 +1,4 @@
+# MosDNS Only IPv4 Rules
+#production.cloudflare.docker.com
+#themoviedb.org
+static.cloudflareinsights.com
