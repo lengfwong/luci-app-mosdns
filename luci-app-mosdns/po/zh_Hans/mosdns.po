@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-20 09:00+0800\n"
+"POT-Creation-Date: 2026-03-20 09:23+0800\n"
 "PO-Revision-Date: 2026-03-19 20:33+0800\n"
 "Last-Translator: sbwml <admin@cooluc.com>\n"
 "Language-Team: Chinese\n"
@@ -506,22 +506,22 @@ msgstr ""
 "生成。仅接受 yaml 格式的配置内容。"
 
 #: htdocs/luci-static/resources/view/mosdns/basic.js:455
-#: htdocs/luci-static/resources/view/mosdns/rules.js:47
 #: htdocs/luci-static/resources/view/mosdns/rules.js:53
-#: htdocs/luci-static/resources/view/mosdns/rules.js:77
+#: htdocs/luci-static/resources/view/mosdns/rules.js:59
 #: htdocs/luci-static/resources/view/mosdns/rules.js:83
-#: htdocs/luci-static/resources/view/mosdns/rules.js:107
+#: htdocs/luci-static/resources/view/mosdns/rules.js:89
 #: htdocs/luci-static/resources/view/mosdns/rules.js:113
-#: htdocs/luci-static/resources/view/mosdns/rules.js:137
+#: htdocs/luci-static/resources/view/mosdns/rules.js:119
 #: htdocs/luci-static/resources/view/mosdns/rules.js:143
-#: htdocs/luci-static/resources/view/mosdns/rules.js:167
+#: htdocs/luci-static/resources/view/mosdns/rules.js:149
 #: htdocs/luci-static/resources/view/mosdns/rules.js:173
-#: htdocs/luci-static/resources/view/mosdns/rules.js:197
+#: htdocs/luci-static/resources/view/mosdns/rules.js:179
 #: htdocs/luci-static/resources/view/mosdns/rules.js:203
-#: htdocs/luci-static/resources/view/mosdns/rules.js:227
+#: htdocs/luci-static/resources/view/mosdns/rules.js:209
 #: htdocs/luci-static/resources/view/mosdns/rules.js:233
-#: htdocs/luci-static/resources/view/mosdns/rules.js:257
+#: htdocs/luci-static/resources/view/mosdns/rules.js:239
 #: htdocs/luci-static/resources/view/mosdns/rules.js:263
+#: htdocs/luci-static/resources/view/mosdns/rules.js:269
 #, javascript-format
 msgid "Unable to save contents: %s"
 msgstr "无法保存内容：%s"
@@ -569,47 +569,47 @@ msgstr "日志数据"
 msgid "Refresh every %s seconds."
 msgstr "每 %s 秒刷新。"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:11
+#: htdocs/luci-static/resources/view/mosdns/rules.js:17
 msgid "Rule Settings"
 msgstr "自定义规则列表"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:12
+#: htdocs/luci-static/resources/view/mosdns/rules.js:18
 msgid "The list of rules only apply to 'Default Config' profiles."
 msgstr "规则列表仅适用于 “内置预设” 配置文件。"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:18
+#: htdocs/luci-static/resources/view/mosdns/rules.js:24
 msgid "White Lists"
 msgstr "白名单"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:19
+#: htdocs/luci-static/resources/view/mosdns/rules.js:25
 msgid "Block Lists"
 msgstr "黑名单"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:20
+#: htdocs/luci-static/resources/view/mosdns/rules.js:26
 msgid "Grey Lists"
 msgstr "灰名单"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:21
+#: htdocs/luci-static/resources/view/mosdns/rules.js:27
 msgid "DDNS Lists"
 msgstr "DDNS 域名"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:22
+#: htdocs/luci-static/resources/view/mosdns/rules.js:28
 msgid "Hosts"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:23
+#: htdocs/luci-static/resources/view/mosdns/rules.js:29
 msgid "Redirect"
 msgstr "重定向"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:24
+#: htdocs/luci-static/resources/view/mosdns/rules.js:30
 msgid "Block PTR"
 msgstr "PTR 黑名单"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:25
+#: htdocs/luci-static/resources/view/mosdns/rules.js:31
 msgid "Streaming Media"
 msgstr "流媒体"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:31
+#: htdocs/luci-static/resources/view/mosdns/rules.js:37
 msgid ""
 "Added domain names always permit resolution using 'local DNS' with the "
 "highest priority (one domain per line, supports domain matching rules)."
@@ -617,20 +617,20 @@ msgstr ""
 "加入的域名始终允许使用 “本地 DNS” 进行解析，且优先级最高（每个域名一行，支持"
 "域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:61
+#: htdocs/luci-static/resources/view/mosdns/rules.js:67
 msgid ""
 "Added domain names will block DNS resolution (one domain per line, supports "
 "domain matching rules)."
 msgstr "加入的域名将屏蔽 DNS 解析（每个域名一行，支持域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:91
+#: htdocs/luci-static/resources/view/mosdns/rules.js:97
 msgid ""
 "Added domain names will always use 'Remote DNS' for resolution (one domain "
 "per line, supports domain matching rules)."
 msgstr ""
 "加入的域名始终使用 “远程 DNS” 进行解析（每个域名一行，支持域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:121
+#: htdocs/luci-static/resources/view/mosdns/rules.js:127
 msgid ""
 "Added domain names will always use 'Local DNS' for resolution, with a forced "
 "TTL of 5 seconds, and results will not be cached (one domain per line, "
@@ -639,14 +639,14 @@ msgstr ""
 "加入的域名始终使用 “本地 DNS” 进行解析，并且强制 TTL 5 秒，解析结果不会进入缓"
 "存（每个域名一行，支持域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:151
+#: htdocs/luci-static/resources/view/mosdns/rules.js:157
 msgid ""
 "Custom Hosts rewrite, for example: baidu.com 10.0.0.1 (one rule per line, "
 "supports domain matching rules)."
 msgstr ""
 "自定义 Hosts 重写，如：baidu.com 10.0.0.1（每个规则一行，支持域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:181
+#: htdocs/luci-static/resources/view/mosdns/rules.js:187
 msgid ""
 "Redirecting requests for domain names. Request domain A, but return records "
 "for domain B, for example: baidu.com qq.com (one rule per line)."
@@ -654,13 +654,13 @@ msgstr ""
 "重定向请求的域名。请求域名 A，但返回域名 B 的记录，如：baidu.com qq.com（每个"
 "规则一行）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:211
+#: htdocs/luci-static/resources/view/mosdns/rules.js:217
 msgid ""
 "Added domain names will block PTR requests (one domain per line, supports "
 "domain matching rules)."
 msgstr "加入的域名将阻止 PTR 请求（每个域名一行，支持域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:241
+#: htdocs/luci-static/resources/view/mosdns/rules.js:247
 msgid ""
 "When enabling 'Custom Stream Media DNS', added domains will always use the "
 "'Streaming Media DNS server' for resolution (one domain per line, supports "
@@ -669,7 +669,8 @@ msgstr ""
 "启用 “自定义流媒体 DNS” 时，加入的域名始终使用 “流媒体 DNS 服务器” 进行解析"
 "（每个域名一行，支持域名匹配规则）"
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:278
+#: htdocs/luci-static/resources/view/mosdns/rules.js:284
+#: htdocs/luci-static/resources/view/mosdns/rules.js:288
 #, javascript-format
 msgid "Failed to restart mosdns: %s"
 msgstr "无法重启 MosDNS：%s"

@@ -35,7 +35,7 @@ function exec_sys(cmd) {
 }
 
 function restart_mosdns() {
-	let p = popen('(sleep 3; /etc/init.d/mosdns restart) >/dev/null 2>&1 &', 'r');
+	let p = popen('(sleep 1; /etc/init.d/mosdns restart) >/dev/null 2>&1 &', 'r');
 	if (p) p.close();
 }
 

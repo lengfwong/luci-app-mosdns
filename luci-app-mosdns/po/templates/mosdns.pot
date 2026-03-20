@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-20 09:00+0800\n"
+"POT-Creation-Date: 2026-03-20 09:23+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -499,22 +499,22 @@ msgid ""
 msgstr ""
 
 #: htdocs/luci-static/resources/view/mosdns/basic.js:455
-#: htdocs/luci-static/resources/view/mosdns/rules.js:47
 #: htdocs/luci-static/resources/view/mosdns/rules.js:53
-#: htdocs/luci-static/resources/view/mosdns/rules.js:77
+#: htdocs/luci-static/resources/view/mosdns/rules.js:59
 #: htdocs/luci-static/resources/view/mosdns/rules.js:83
-#: htdocs/luci-static/resources/view/mosdns/rules.js:107
+#: htdocs/luci-static/resources/view/mosdns/rules.js:89
 #: htdocs/luci-static/resources/view/mosdns/rules.js:113
-#: htdocs/luci-static/resources/view/mosdns/rules.js:137
+#: htdocs/luci-static/resources/view/mosdns/rules.js:119
 #: htdocs/luci-static/resources/view/mosdns/rules.js:143
-#: htdocs/luci-static/resources/view/mosdns/rules.js:167
+#: htdocs/luci-static/resources/view/mosdns/rules.js:149
 #: htdocs/luci-static/resources/view/mosdns/rules.js:173
-#: htdocs/luci-static/resources/view/mosdns/rules.js:197
+#: htdocs/luci-static/resources/view/mosdns/rules.js:179
 #: htdocs/luci-static/resources/view/mosdns/rules.js:203
-#: htdocs/luci-static/resources/view/mosdns/rules.js:227
+#: htdocs/luci-static/resources/view/mosdns/rules.js:209
 #: htdocs/luci-static/resources/view/mosdns/rules.js:233
-#: htdocs/luci-static/resources/view/mosdns/rules.js:257
+#: htdocs/luci-static/resources/view/mosdns/rules.js:239
 #: htdocs/luci-static/resources/view/mosdns/rules.js:263
+#: htdocs/luci-static/resources/view/mosdns/rules.js:269
 #, javascript-format
 msgid "Unable to save contents: %s"
 msgstr ""
@@ -561,97 +561,98 @@ msgstr ""
 msgid "Refresh every %s seconds."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:11
+#: htdocs/luci-static/resources/view/mosdns/rules.js:17
 msgid "Rule Settings"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:12
+#: htdocs/luci-static/resources/view/mosdns/rules.js:18
 msgid "The list of rules only apply to 'Default Config' profiles."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:18
+#: htdocs/luci-static/resources/view/mosdns/rules.js:24
 msgid "White Lists"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:19
+#: htdocs/luci-static/resources/view/mosdns/rules.js:25
 msgid "Block Lists"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:20
+#: htdocs/luci-static/resources/view/mosdns/rules.js:26
 msgid "Grey Lists"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:21
+#: htdocs/luci-static/resources/view/mosdns/rules.js:27
 msgid "DDNS Lists"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:22
+#: htdocs/luci-static/resources/view/mosdns/rules.js:28
 msgid "Hosts"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:23
+#: htdocs/luci-static/resources/view/mosdns/rules.js:29
 msgid "Redirect"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:24
+#: htdocs/luci-static/resources/view/mosdns/rules.js:30
 msgid "Block PTR"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:25
+#: htdocs/luci-static/resources/view/mosdns/rules.js:31
 msgid "Streaming Media"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:31
+#: htdocs/luci-static/resources/view/mosdns/rules.js:37
 msgid ""
 "Added domain names always permit resolution using 'local DNS' with the "
 "highest priority (one domain per line, supports domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:61
+#: htdocs/luci-static/resources/view/mosdns/rules.js:67
 msgid ""
 "Added domain names will block DNS resolution (one domain per line, supports "
 "domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:91
+#: htdocs/luci-static/resources/view/mosdns/rules.js:97
 msgid ""
 "Added domain names will always use 'Remote DNS' for resolution (one domain "
 "per line, supports domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:121
+#: htdocs/luci-static/resources/view/mosdns/rules.js:127
 msgid ""
 "Added domain names will always use 'Local DNS' for resolution, with a forced "
 "TTL of 5 seconds, and results will not be cached (one domain per line, "
 "supports domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:151
+#: htdocs/luci-static/resources/view/mosdns/rules.js:157
 msgid ""
 "Custom Hosts rewrite, for example: baidu.com 10.0.0.1 (one rule per line, "
 "supports domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:181
+#: htdocs/luci-static/resources/view/mosdns/rules.js:187
 msgid ""
 "Redirecting requests for domain names. Request domain A, but return records "
 "for domain B, for example: baidu.com qq.com (one rule per line)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:211
+#: htdocs/luci-static/resources/view/mosdns/rules.js:217
 msgid ""
 "Added domain names will block PTR requests (one domain per line, supports "
 "domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:241
+#: htdocs/luci-static/resources/view/mosdns/rules.js:247
 msgid ""
 "When enabling 'Custom Stream Media DNS', added domains will always use the "
 "'Streaming Media DNS server' for resolution (one domain per line, supports "
 "domain matching rules)."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/mosdns/rules.js:278
+#: htdocs/luci-static/resources/view/mosdns/rules.js:284
+#: htdocs/luci-static/resources/view/mosdns/rules.js:288
 #, javascript-format
 msgid "Failed to restart mosdns: %s"
 msgstr ""

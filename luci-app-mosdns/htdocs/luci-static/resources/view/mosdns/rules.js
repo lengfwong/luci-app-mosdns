@@ -3,6 +3,12 @@
 'require fs';
 'require ui';
 'require view';
+'require rpc';
+
+var callRestart = rpc.declare({
+	object: 'luci.mosdns',
+	method: 'restart'
+});
 
 return view.extend({
 	render: function () {
@@ -270,9 +276,13 @@ return view.extend({
 	handleSaveApply: function (ev) {
 		var m = this.map;
 		onclick = L.bind(this.handleSave, this, m);
-		return fs.exec('/etc/init.d/mosdns', ['restart'])
-			.then(function () {
-				window.location.reload();
+		return callRestart()
+			.then(function (res) {
+				if (res && res.code === 0) {
+					window.location.reload();
+				} else {
+					ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(res.output || 'Unknown error')));
+				}
 			})
 			.catch(function (e) {
 				ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(e.message)));
