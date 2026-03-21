@@ -63,14 +63,29 @@ function get_logfile_path_internal() {
 	}
 }
 
+function get_api_port_internal() {
+    let uci_cursor = cursor();
+    uci_cursor.load('mosdns');
+    let configfile = uci_cursor.get('mosdns', 'config', 'configfile');
+
+    if (configfile === '/etc/mosdns/config_custom.yaml') {
+        let content = readfile(configfile);
+        if (content) {
+            let m = match(content, /http:\s*["']?[^:]+:(\d+)["']?/);
+            if (m && m[1]) {
+                return m[1];
+            }
+        }
+    }
+
+    return uci_cursor.get('mosdns', 'config', 'listen_port_api');
+}
+
 const methods = {
 	flush_cache: {
 		call: function() {
 			try {
-				let uci_cursor = cursor();
-				uci_cursor.load('mosdns');
-				let port = uci_cursor.get('mosdns', 'config', 'listen_port_api');
-				if (!port) return { error: "API listen port not configured." };
+				let port = get_api_port_internal();
 
 				let res = exec_sys(`curl -s 127.0.0.1:${port}/plugins/lazy_cache/flush`);
 				if (res.code === 0) {
