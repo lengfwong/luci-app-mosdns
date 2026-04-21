@@ -257,13 +257,6 @@ function update_geodat() {
 
 	exec_sys(`rm -rf "${tmpdir}"`);
 
-	let apple_url = mirror + "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/apple-cn.txt";
-	print("Downloading apple-cn.txt.\n");
-	if (exec_sys(`curl --connect-timeout 5 -m 120 --ipv4 -kfSLo "/etc/mosdns/rule/apple-cn.txt" "${apple_url}"`).code !== 0) {
-			print("\x1b[1;31mapple-cn.txt download error\n"); exit(1);
-		} else {
-			print("apple-cn downloaded.\n");
-		}
 }
 
 function filter_geosite_exclude() {
@@ -313,7 +306,7 @@ function v2dat_dump() {
 		}
 	} else {
 		exec_sys(`v2dat unpack geoip -o /var/mosdns -f cn ${v2dat_dir}/geoip.dat`);
-		exec_sys(`v2dat unpack geosite -o /var/mosdns -f cn -f 'geolocation-!cn' ${v2dat_dir}/geosite.dat`);
+		exec_sys(`v2dat unpack geosite -o /var/mosdns -f cn -f apple-cn -f 'geolocation-!cn' ${v2dat_dir}/geosite.dat`);
 
 		let geoip_tags = to_array(uci_cursor.get('mosdns', 'config', 'geoip_tags'));
 		if (length(geoip_tags) > 0) {
