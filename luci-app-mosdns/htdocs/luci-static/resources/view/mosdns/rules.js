@@ -5,412 +5,109 @@
 'require view';
 'require rpc';
 
-var callRestart = rpc.declare({
+const callRestart = rpc.declare({
 	object: 'luci.mosdns',
 	method: 'restart'
 });
 
+const ruleFiles = {
+    'whitelist': 'whitelist.txt',
+    'blocklist': 'blocklist.txt',
+    'greylist': 'greylist.txt',
+    'ddnslist': 'ddnslist.txt',
+    'hostslist': 'hosts.txt',
+    'redirectlist': 'redirect.txt',
+    'localptrlist': 'local-ptr.txt',
+    'streamingmedialist': 'streaming.txt',
+    'gfwpluslist': 'gfwplus_list.txt',
+    'remotequerylist': 'remotelist.txt',
+    'excludegfwlist': 'excludegfw.txt',
+    'knownlist': 'knownlist.txt'
+};
+
+const descriptions = {
+    'whitelist': _('Added domain names always permit resolution using \'local DNS\' with the highest priority...'),
+    'blocklist': _('Added domain names will block DNS resolution (one domain per line, supports domain matching rules).'),
+    'greylist': _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and can add nftable sets greylist yet.'),
+    'gfwpluslist': _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and add nftable sets gfwlist.'),
+    'remotequerylist': _('Added domain names will always use \'Remote DNS\' for resolution, and return IPv4 only (one domain per line, supports domain matching rules).'),
+    'streamingmedialist': _('When enabling \'Custom Stream Media DNS\', added domains will always use the \'Streaming Media DNS server\' for resolution (one domain per line, supports domain matching rules).'),
+    'knownlist': _('Known domain lists, forward to local DNS query(one domain per line, supports domain matching rules).'),
+    'ddnslist': _('Added domain names will always use \'Local DNS\' for resolution, with a forced TTL of 5 seconds (one domain per line, supports domain matching rules).'),
+    'hostslist': _('Custom Hosts rewrite, for example: baidu.com 10.0.0.1 (one rule per line, supports domain matching rules).'),
+    'redirectlist': _('Redirecting requests for domain names. Request domain A, but return records for domain B, for example: baidu.com qq.com (one rule per line).'),
+    'localptrlist': _('Added domain names will block PTR requests (one domain per line, supports domain matching rules).'),
+    'excludegfwlist': _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, supports domain matching rules).')
+};
+
 return view.extend({
-	render: function () {
-		var m, s, o;
+    render() {
+        const m = new form.Map("mosdns", _("Rule Settings"),
+            _('Except for the lists defined by Sbwml, the other\'GfwPlusLists, RemoteQueryLists, Known Lists, and ExcludeGfwlists\' are only applicable to\'Custom Config\'profiles.'));
 
-		m = new form.Map("mosdns", _("Rule Settings"),
-			_('The list of rules only apply to \'Default Config\' profiles.'));
+        const s = m.section(form.TypedSection);
+        s.anonymous = true;
+        s.sortable = true;
 
-		s = m.section(form.TypedSection);
-		s.anonymous = true;
-		s.sortable = true;
+        s.tab('whitelist', _('White Lists'));
+        s.tab('blocklist', _('Block Lists'));
+        s.tab('greylist', _('Grey Lists'));
+        s.tab('gfwpluslist', _('GfwPlusLists'));
+        s.tab('remotequerylist', _('RemoteQueryLists'));
+        s.tab('streamingmedialist', _('Streaming Media'));
+        s.tab('knownlist', _('Known Lists'));
+        s.tab('ddnslist', _('DDNS Lists'));
+        s.tab('hostslist', _('Hosts'));
+        s.tab('redirectlist', _('Redirect'));
+        s.tab('localptrlist', _('Block PTR'));
+        s.tab('excludegfwlist', _('ExcludeGfwlists'));
 
-		s.tab('whitelist', _('White Lists'));
-		s.tab('blocklist', _('Block Lists'));
-		s.tab('greylist', _('Grey Lists'));
-		s.tab('gfwpluslist', _('GfwPlusLists'));
-		s.tab('remotequerylist', _('RemoteQueryLists'));
-		s.tab('streamingmedialist', _('Streaming Media'));
-		s.tab('knownlist', _('Known Lists'));
-		s.tab('ddnslist', _('DDNS Lists'));
-		s.tab('hostslist', _('Hosts'));
-		s.tab('redirectlist', _('Redirect'));
-		s.tab('localptrlist', _('Block PTR'));
-		s.tab('excludegfwlist', _('ExcludeGfwlists'));
+        Object.keys(ruleFiles).forEach(tabName => {
+            const fileName = ruleFiles[tabName];
+            const filePath = `/etc/mosdns/rule/${fileName}`;
+            const desc = descriptions[tabName] || '';
 
-		// --- White Lists ---
-		o = s.taboption('whitelist', form.TextValue, '_whitelist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names always permit resolution using \'local DNS\' with the highest priority (one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/whitelist.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/whitelist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/whitelist.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+            const o = s.taboption(tabName, form.TextValue, `_${tabName}`, null,
+                desc ? `<font color='red'>${desc}</font>` : null);
 
-		// --- Block Lists ---
-		o = s.taboption('blocklist', form.TextValue, '_blocklist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names will block DNS resolution (one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/blocklist.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/blocklist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/blocklist.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+            o.rows = 25;
 
-		// --- Grey Lists ---
-		o = s.taboption('greylist', form.TextValue, '_greylist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and added nftable sets greylist.')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/greylist.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/greylist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/greylist.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+            o.cfgvalue = () => fs.trimmed(filePath).catch(() => "");
 
-		// --- DDNS Lists ---
-		o = s.taboption('ddnslist', form.TextValue, '_ddnslist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names will always use \'Local DNS\' for resolution, with a forced TTL of 5 seconds (one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/ddnslist.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/ddnslist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/ddnslist.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+            o.write = async (section_id, formvalue) => {
+                const value = await o.cfgvalue(section_id);
+                if (value === formvalue) return;
 
-		// --- Hosts ---
-		o = s.taboption('hostslist', form.TextValue, '_hostslist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Custom Hosts rewrite, for example: baidu.com 10.0.0.1 (one rule per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/hosts.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/hosts.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/hosts.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+                const content = formvalue.trim() ? `${formvalue.trim().replace(/\r\n/g, '\n')}\n` : '';
+                return fs.write(filePath, content).catch(e => {
+                    ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+                });
+            };
 
-		// --- Redirect ---
-		o = s.taboption('redirectlist', form.TextValue, '_redirectlist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Redirecting requests for domain names. Request domain A, but return records for domain B, for example: baidu.com qq.com (one rule per line).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/redirect.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/redirect.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/redirect.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+            o.remove = () => fs.write(filePath, '').catch(e => {
+                ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+            });
+        });
 
-		// --- Block PTR ---
-		o = s.taboption('localptrlist', form.TextValue, '_localptrlist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names will block PTR requests (one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/local-ptr.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/local-ptr.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/local-ptr.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+        return m.render();
+    },
 
-		// --- Streaming Media ---
-		o = s.taboption('streamingmedialist', form.TextValue, '_streamingmedialist',
-			null,
-			'<font color=\'red\'>'
-			+ _('When enabling \'Custom Stream Media DNS\', added domains will always use the \'Streaming Media DNS server\' for resolution (one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/streaming.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/streaming.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/streaming.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+    async handleSaveApply(ev) {
+        const m = this.map;
 
-		// --- Gfwlist plus ---
-		o = s.taboption('gfwpluslist', form.TextValue, '_gfwpluslist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and added nftable sets gfwlist.')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/gfwplus_list.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/gfwplus_list.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/gfwplus_list.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+        try {
+            await this.handleSave(m);
+            const res = await callRestart();
 
-		// --- Remote Query ---
-		o = s.taboption('remotequerylist', form.TextValue, '_remotequerylist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Added domain names will always use \'Remote DNS\' for resolution, and return IPv4 only (one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/remotelist.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/remotelist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/remotelist.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
+            if (res?.code === 0) {
+                window.location.reload();
+            } else {
+                ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(res.output || 'Unknown error')));
+            }
+        } catch (e) {
+            ui.addNotification(null, E('p', _('Error: %s').format(e.message)));
+        }
+    },
 
-		// --- Exclude Gfwlist ---
-		o = s.taboption('excludegfwlist', form.TextValue, '_excludegfwlist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/excludegfw.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/excludegfw.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/excludegfw.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
-
-		// --- Know List ---
-		o = s.taboption('knownlist', form.TextValue, '_knownlist',
-			null,
-			'<font color=\'red\'>'
-			+ _('Known domain lists, forward to local DNS query(one domain per line, supports domain matching rules).')
-			+ '</font>'
-		);
-		o.rows = 25;
-		o.cfgvalue = function (section_id) {
-			return fs.trimmed('/etc/mosdns/rule/knownlist.txt').catch(function (e) {
-				return "";
-			});
-		};
-		o.write = function (section_id, formvalue) {
-			return this.cfgvalue(section_id).then(function (value) {
-				if (value == formvalue) {
-					return;
-				}
-				return fs.write('/etc/mosdns/rule/knownlist.txt', (formvalue.trim() ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : ''))
-					.catch(function (e) {
-						ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-					});
-			});
-		};
-		o.remove = function (section_id) {
-			return fs.write('/etc/mosdns/rule/knownlist.txt', '').catch(function (e) {
-				ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-			});
-		};
-
-		return m.render();
-	},
-
-	handleSaveApply: function (ev) {
-		var m = this.map;
-		onclick = L.bind(this.handleSave, this, m);
-		return callRestart()
-			.then(function (res) {
-				if (res && res.code === 0) {
-					window.location.reload();
-				} else {
-					ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(res.output || 'Unknown error')));
-				}
-			})
-			.catch(function (e) {
-				ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(e.message)));
-			});
-	},
-	handleReset: null
+    handleReset: null
 });
