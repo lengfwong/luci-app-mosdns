@@ -16,20 +16,6 @@
 
 **DNS-over-QUIC:** `quic://dns.alidns.com` **&** `doq://dns.alidns.com`
 
-## New Data Provider: `adblock_set`
-
-The parser supports the following common DNS-related rule formats:
-
-- `||example.com^`: Subdomain match.
-- `example.com`: Exact match.
-- `|example.com|`: Exact match.
-- `/regexp/`: Regular expression match.
-- `*keyword*`: Keyword match.
-- `@@`: Prefix for whitelisting rules.
-- mosdns rules: `domain:`, `full:`, `keyword:`, `regexp:`
-
-You can now use the new provider in your `config.yaml`:
-
 ```yaml
 plugins:
   - tag: "ad_rules"
