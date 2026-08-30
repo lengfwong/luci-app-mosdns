@@ -1,12 +1,1 @@
-# MosDNS Rules
-#gemini.google.com
-#googletagmanager.com
-#googleapis.cn
-subhd.tv
-openai.com
-chatgpt.com
-oaistatic.com
-oaiusercontent.com
-copilot.microsoft.com
-bing.com
-ftchinese.com
+# MosDNS Rules Stop Use

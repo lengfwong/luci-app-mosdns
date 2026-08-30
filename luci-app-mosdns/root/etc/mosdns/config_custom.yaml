@@ -1,10 +1,12 @@
 log:
-  level: info
+  level: warn
   file: "/var/log/mosdns.log"
+  backups: 2
+  size: 1
 
 # API 入口设置
 api:
-  http: "0.0.0.0:9091"
+  http: "127.0.0.1:9091"
 
 include: []
 
@@ -13,9 +15,12 @@ plugins:
   - tag: stats_collector
     type: stats_api
     args:
-      capacity: 2000                      # 查询日志环缓冲区容量 (FIFO 覆盖)
-      dump_file: "/etc/mosdns/stats.dump" # 数据持久化转存文件路径，不设置则不转存
-      dump_interval: 600                  # 周期性转储间隔（秒）
+      # Query log ring buffer capacity (FIFO overwrite)查询日志环缓冲区容量 (FIFO 覆盖)
+      capacity: 2000
+      # Optional dump file path for data persistence (gzip compressed)数据持久化转存文件路径，不设置则不转存
+      dump_file: "./stats.dump"
+      # Periodic dump interval in seconds (default: 600) 周期性转储间隔（秒）
+      dump_interval: 600
 
   # 国内域名
   - tag: geosite_cn
@@ -23,6 +28,7 @@ plugins:
     args:
       files:
         - "/var/mosdns/geosite_cn.txt"
+        - "/etc/mosdns/rule/knownlist.txt"
 
   # 国内 IP
   - tag: geoip_cn
@@ -31,12 +37,94 @@ plugins:
       files:
         - "/var/mosdns/geoip_cn.txt"
 
+  - tag: geosite_apple
+    type: domain_set
+    args:
+      files:
+        - "/var/mosdns/geosite_apple-cn.txt"
+      # - "/etc/mosdns/rule/apple-cn.txt"
+
   # 国外域名
   - tag: geosite_no_cn
     type: domain_set
     args:
       files:
         - "/var/mosdns/geosite_geolocation-!cn.txt"
+        - "/etc/mosdns/rule/trackerlist.txt"
+
+  - tag: whitelist
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/rule/whitelist.txt"
+
+  - tag: blocklist
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/rule/blocklist.txt"
+
+# - tag: greylist_name
+#   type: domain_set
+#   args:
+#     files:
+#       - "/etc/mosdns/rule/greylist.txt"
+
+  - tag: ddnslist
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/rule/ddnslist.txt"
+
+  - tag: hosts
+    type: hosts
+    args:
+      files:
+        - "/etc/mosdns/rule/hosts.txt"
+
+  - tag: remotelist
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/rule/remotelist.txt"
+
+  - tag: redirect
+    type: redirect
+    args:
+      files:
+        - "/etc/mosdns/rule/redirect.txt"
+
+  - tag: adlist
+    type: domain_set
+    args:
+      files:
+        - "/var/mosdns/geosite_category-ads-all.txt"
+        - "/etc/mosdns/rule/adlist.txt"
+
+  - tag: local_ptr
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/rule/local-ptr.txt"
+
+  - tag: gfwlist_name
+    type: domain_set
+    args:
+      files:
+        - "/var/mosdns/geosite_gfw.txt"
+        - "/etc/mosdns/rule/gfwplus_list.txt"
+
+  - tag: cloudflare_cidr
+    type: ip_set
+    args:
+      files:
+        - "/etc/mosdns/rule/cloudflare-cidr.txt"
+
+  - tag: stream_media
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/rule/streaming.txt"
 
   # 缓存
   - tag: lazy_cache
@@ -46,81 +134,336 @@ plugins:
       lazy_cache_ttl: 86400
       dump_file: "/etc/mosdns/cache.dump"
       dump_interval: 600
+      prefetch: false
+      # 在 TTL 还剩 10 秒时尝试预读 (默认为 10)
+#      prefetch_before_expire: 10
+      # 至少被命中 2 次才触发预读 (默认为 3)
+ #     prefetch_min_hits: 3
+      # 后台扫描周期，每 3 秒扫描一次 (默认为 5)
+ #     prefetch_scan_interval: 5
+
+  - tag: forward_xinfeng_udp
+    type: forward
+    args:
+      concurrent: 2
+      upstreams:
+        - addr: "114.114.114.114"
+        - addr: "114.114.115.115"
+
+  - tag: forward_ddns_udp
+    type: forward
+    args:
+      concurrent: 2
+      upstreams:
+        - addr: "114.114.115.115"
+        - addr: "180.76.76.76"
+        - addr: "119.29.29.29"
+
 
   # 转发至本地服务器
   - tag: forward_local
     type: forward
     args:
+      concurrent: 2
       upstreams:
-        - addr: "https://doh.pub/dns-query"
-          bootstrap: 180.76.76.76
-        - addr: 119.29.29.29
+        - tag: AlidnsDOH
+      #   addr: "h3://223.6.6.6/dns-query"
+       #  addr: "https://223.6.6.6/dns-query"
+          addr: "https://223.5.5.5/dns-query"
+      #   addr: "quic://223.5.5.5"
+          insecure_skip_verify: false
+          enable_http3: true
+        - tag: Tencent
+          addr: "https://doh.pub/dns-query"
+       #  addr: "tls://dot.pub"
+      #   enable_pipeline: true
+          dial_addr: "120.53.53.53"
+       #  dial_addr: "1.12.12.21"
+          insecure_skip_verify: true
+        - tag: AlidnsIpv6
+          addr: "tls://2400:3200:baba::1"
+          insecure_skip_verify: true
+      #   enable_http3: true
+        - tag: CMCC
+      #   addr: "211.137.130.19"
+          addr: "211.137.130.3"
+    #   - tag: Tencent-udp
+    #     addr: "119.29.29.29"
 
   # 转发至远程服务器
   - tag: forward_remote
     type: forward
     args:
+      concurrent: 2
       upstreams:
-        - addr: tls://8.8.8.8
-          enable_pipeline: false
+        - tag: GoogleDNS
+          addr: "https://dns.google/dns-query"
+      #   addr: "tls://dns.google"
+    #     dial_addr: "8.8.8.8"
+          dial_addr: "8.8.4.4"
+          enable_pipeline: true
+          socks5: "127.0.0.1:1081"
+ #      - tag: Cloudflare
+ #        addr: "tls://1.1.1.1"
+ #        enable_pipeline: true
+ #    #   addr: "tls://2606:4700:4700::1001"
+ #    #   addr: "tls://2606:4700:4700::1111"
+ #    #   addr: https://1.1.1.1/dns-query
+ #    #   addr: https://1.0.0.1/dns-query
+ #    #   insecure_skip_verify: false
+        - tag: AdGuard2-persion
+    #     addr: "https://d.adguard-dns.com/dns-query/de721498"
+          addr: "quic://de721498.d.adguard-dns.com"
+       #  addr: "tls://de721498.d.adguard-dns.com/"
+     #    addr: "https://d.adguard-dns.com/dns-query/69deebbb"
+     #    addr: "quic://69deebbb.d.adguard-dns.com"
+     # #  addr: "tls://69deebbb.d.adguard-dns.com/"
+          enable_pipeline: true
+    #     dial_addr: "94.140.14.49"
+    #     socks5: "127.0.0.1:1081"
+          dial_addr: "2a10:50c0::ded:ff"
+       #  dial_addr: "2a10:50c0::dad:ff"
+    #     insecure_skip_verify: true
+        - tag: Nextdns
+       #  addr: "quic://openwrt-bff6cc.dns.nextdns.io"
+          addr: "https://45.90.28.123/bff6cc/opx86"
+       #  addr: "https://[2a07:a8c0::bf:f6cc]/bff6cc/opx86"
+          enable_pipeline: true
+       #  dial_addr: "2a07:a8c1::bf:f6cc"
+       #  dial_addr: "2a07:a8c0::bf:f6cc"
+       #  dial_addr: "45.90.28.123"
+       #  dial_addr: "45.90.30.123"
+          insecure_skip_verify: true
+   #    - tag: AdGuard2
+   # #    addr: "quic://dns.adguard-dns.com"
+   #      addr: "https://dns.adguard-dns.com/dns-query"
+   # #    addr: "tls://dns.adguard-dns.com/"
+   # #    enable_pipeline: true
+   #      dial_addr: "2a10:50c0::ad1:ff"
+   # #    dial_addr: "2a10:50c0::ad2:ff"
+   #      insecure_skip_verify: true
 
-  # 国内解析
-  - tag: local_sequence
+ #- tag: modify_ttl
+ #  type: sequence
+ #  args:
+ #    - exec: ttl 0-0
+ #    - exec: ttl 0-900
+ #
+ #
+ #- tag: modify_ddns_ttl
+ #  type: sequence
+ #  args:
+ #    - exec: ttl 5-5
+ #    - exec: ttl 600-900
+
+ #- tag: drop_resp_query
+ #  type: sequence
+ #  args:
+ #    - exec: query_summary "DropLocalIP"
+ #    - exec: drop_resp
+
+  - tag: special_sequence
     type: sequence
     args:
-      - exec: $forward_local
+      - exec: ecs 43.255.92.0
+    # - exec: ecs 45.87.55.0
+      - exec: prefer_ipv4
+      - exec: $forward_remote
+      - exec: remove_cname
+      - matches: "resp_ip 0.0.0.0 $geoip_cn"
+        exec: drop_resp
+      - exec: nftset inet,fw4,speciallist,ipv4_addr,32
+   #  - exec: query_summary specialQuery
 
-  # 国外解析
-  - tag: remote_sequence
+# - tag: greylist_sequence
+#   type: sequence
+#   args:
+#     - exec: prefer_ipv4
+#   # - exec: ecs 45.87.55.0
+#     - exec: $forward_remote
+#     - matches: "resp_ip 0.0.0.0 $geoip_cn"
+#       exec: drop_resp
+#     - exec: remove_cname
+#     - exec: nftset inet,fw4,greylist,ipv4_addr,32
+
+  - tag: gfwlist_sequence
+    type: sequence
+    args:
+      - exec: ecs 43.255.92.0
+    # - exec: ecs 2a14:7581:fe00:0:0:0:0:0
+    # - exec: debug_print query
+      - exec: prefer_ipv4
+      - exec: $forward_remote
+      - exec: remove_cname
+      - matches: "resp_ip 0.0.0.0 $geoip_cn"
+        exec: drop_resp
+    # - exec: debug_print  GFW
+      - matches: "resp_ip $cloudflare_cidr"
+    #   exec: nftset inet,fw4,gfwcflist,ipv4_addr,32 inet,fw4,gfwcflistV6,ipv6_addr,128
+        exec: nftset inet,fw4,gfwcflist,ipv4_addr,32
+      - matches: "!resp_ip $cloudflare_cidr"
+    #   exec: nftset inet,fw4,gfwlist,ipv4_addr,32 inet,fw4,gfwlistV6,ipv6_addr,128
+        exec: nftset inet,fw4,gfwlist,ipv4_addr,32
+   #  - exec: query_summary gfwQuery
+
+  - tag: Cloudflare
+    type: sequence
+    args:
+      - exec: prefer_ipv4
+    # - exec: black_hole 162.159.129.40 162.159.137.233
+      - exec: black_hole 104.16.144.36 104.16.154.127
+    # - exec: black_hole 104.16.255.74 104.16.248.14
+
+  - tag: CF_recover
+    type: sequence
+    args:
+      - exec: mark 123
+
+  - tag: remote_query_sequence
     type: sequence
     args:
       - exec: prefer_ipv4
       - exec: $forward_remote
+      - exec: remove_cname
+
 
   # 有响应终止返回
   - tag: has_resp_sequence
     type: sequence
     args:
+    # - matches: "qname $ddnslist"
+    #   exec: ttl 0-0
+      - matches: "!qname $ddnslist"
+        exec: ttl 300-900
+      - matches:
+        - "resp_ip $cloudflare_cidr"
+        - "!qname $gfwlist_name"
+  #     - "!qname $greylist_name"
+      # - "!qname $remotelist"
+        exec: $Cloudflare
       - matches: has_resp
         exec: accept
 
-  # fallback 用本地服务器 sequence
-  # 返回非国内 ip 则 drop_resp
-  - tag: query_is_local_ip
+  - tag: lazy_has_resp_sequence
     type: sequence
     args:
-      - exec: $local_sequence
+    # - matches: "qname $ddnslist"
+    #   exec: ttl 0-0
+      - matches: "!qname $ddnslist"
+        exec: ttl 0-600
+      - matches: has_resp
+        exec: accept
+
+ #- tag: gfw_has_resp_sequence
+ #  type: sequence
+ #  args:
+ #    - matches: "resp_ip 0.0.0.0 $geoip_cn"
+ #      exec: drop_resp
+ #    - matches: has_resp
+ #      exec: accept
+
+  # 返回非国内 ip 则 drop_resp
+  - tag: query_is_non_local_ip
+    type: sequence
+    args:
+      - exec: $forward_local
       - matches: "!resp_ip $geoip_cn"
+ #      exec: $drop_resp_query
         exec: drop_resp
 
+  # apple fallback 用本地服务器 sequence
+  - tag: apple_domain_fallback
+    type: fallback
+    args:
+      primary: query_is_non_local_ip
+      secondary: forward_xinfeng_udp
+      threshold: 100
+      always_standby: true
+
   # fallback 用远程服务器 sequence
-  - tag: query_is_remote
+  - tag: forward_remote_upstream
     type: sequence
     args:
-      - exec: $remote_sequence
+  #   - exec: ecs 2a14:7581:fe00:0:0:0:0:0
+  #   - exec: query_summary "FallBackRQ"
+      - matches: "!qname $gfwlist_name"
+        exec: $forward_remote
 
   # fallback 用远程服务器 sequence
   - tag: fallback
     type: fallback
     args:
-      primary: query_is_local_ip
-      secondary: query_is_remote
+      primary: query_is_non_local_ip
+      secondary: forward_remote_upstream
       threshold: 500
       always_standby: true
 
-  # 查询国内域名
-  - tag: query_is_local_domain
+  - tag: query_is_white_domain
     type: sequence
     args:
-      - matches: qname $geosite_cn
-        exec: $local_sequence
+      - matches: "qname $whitelist"
+        exec: $forward_local
 
-  # 查询国外域名
-  - tag: query_is_no_local_domain
+  - tag: query_is_reject_domain
     type: sequence
     args:
-      - matches: qname $geosite_no_cn
-        exec: $remote_sequence
+      - matches: qname $blocklist
+        exec: reject 3
+      - matches: qname $adlist
+        exec: reject 3
+      - matches:
+        - qtype 12
+        - qname $local_ptr
+        exec: reject 3
+      - matches: qtype 65
+        exec: reject 3
+
+  #查询DDNS域名
+  - tag: query_is_ddns_domain
+    type: sequence
+    args:
+      - matches: qname $ddnslist
+        exec: $forward_ddns_udp
+
+  - tag: query_is_stream_media_domain
+    type: sequence
+    args:
+      - matches: qname $stream_media
+        exec: $special_sequence
+
+# - tag: query_is_greylist_domain
+#   type: sequence
+#   args:
+#     - matches: qname $greylist_name
+#       exec: $greylist_sequence
+
+  - tag: query_is_gfwlist_domain
+    type: sequence
+    args:
+      - matches: qname $gfwlist_name
+        exec: $gfwlist_sequence
+
+  - tag: query_is_remote_query_domain
+    type: sequence
+    args:
+      - matches: qname $remotelist
+        exec: $remote_query_sequence
+
+  - tag: query_is_apple_domain
+    type: sequence
+    args:
+      - matches: "!qname $geosite_apple"
+        exec: return
+      - exec: $apple_domain_fallback
+
+  # 查询exclude-all域名
+  - tag: query_is_all_domain
+    type: sequence
+    args:
+      - matches:
+        - "qname $geosite_cn $geosite_no_cn"
+        - "!qname $gfwlist_name"
+        exec: $forward_local
 
   # 主要的运行逻辑插件
   # sequence 插件中调用的插件 tag 必须在 sequence 前定义，
@@ -128,25 +471,57 @@ plugins:
   - tag: main_sequence
     type: sequence
     args:
-      - exec: $stats_collector           # 执行全局统计控制器
-      - exec: $lazy_cache
+      - exec: $stats_collector
+      - exec: $hosts
       - exec: jump has_resp_sequence
-      - exec: $query_is_local_domain
+      - matches:
+ #       - "!qname $ddnslist"
+         - "!qname $blocklist"
+         - "!qname $adlist"
+         - "!qname $local_ptr"
+        exec: $lazy_cache
+      - exec: jump lazy_has_resp_sequence
+      - exec: $redirect
       - exec: jump has_resp_sequence
-      - exec: $query_is_no_local_domain
+      - exec: $query_is_ddns_domain
       - exec: jump has_resp_sequence
+      - exec: $query_is_stream_media_domain
+      - exec: jump has_resp_sequence
+      - exec: $query_is_white_domain
+      - exec: jump has_resp_sequence
+ #    - exec: query_summary "before reject"
+      - exec: $query_is_reject_domain
+      - exec: jump has_resp_sequence
+   #  - exec: debug_print query
+   #  - exec: $query_is_greylist_domain
+   #  - exec: jump has_resp_sequence
+   #  - exec: query_summary "gfw_query_Fir"
+      - exec: $query_is_gfwlist_domain
+   #  - exec: debug_print query
+      - exec: jump has_resp_sequence
+   #  - exec: query_summary "gfw_query_Aft"
+   #  - exec: debug_print query
+      - exec: $query_is_apple_domain
+      - exec: jump has_resp_sequence
+      - exec: $query_is_remote_query_domain
+      - exec: jump has_resp_sequence
+ #    - exec: query_summary "all_query"
+      - exec: $query_is_all_domain
+      - exec: jump has_resp_sequence
+ #    - exec: query_summary "fallback"
       - exec: $fallback
+      - exec: jump has_resp_sequence
 
   # 启动 udp 服务器。
   - tag: udp_server
     type: udp_server
     args:
       entry: main_sequence
-      listen: ":5335"
+      listen: ":53"
 
   # 启动 tcp 服务器。
   - tag: tcp_server
     type: tcp_server
     args:
       entry: main_sequence
-      listen: ":5335"
+      listen: ":53"

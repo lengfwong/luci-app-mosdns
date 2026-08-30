@@ -1,6 +1,8 @@
 # MosDNS Rules
 #pincong.rocks
-ntdtv.com
-epochtimes.com
-lain.la
-aboluowang.com
+#ntdtv.com
+#epochtimes.com
+#aboluowang.com
+#rfi.fr
+#chinadigitaltimes.net
+#lain.la

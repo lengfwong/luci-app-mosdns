@@ -1,12 +1,20 @@
 # MosDNS Rules
 #e11209.dsca.akamaiedge.net
-#linux.do
 #yesterdayprotests.com
 #ghcr.io
 #upgrade.mikrotik.com
-#openwrt.org
+#zoom.us
+#zoom.com
+#adguard-dns.io
+#self.events.data.microsoft.com
+ext.to
+rargb.to
+rarbgproxy.to
+rarbggo.to
+www.ermao.net
+subhd.tv
+services.googleapis.cn
 howtogeek.com
-zoom.us
 yesterdayprotests.com
 maptiler.com
 codewiki.google
@@ -17,7 +25,6 @@ twnic.tw
 www.techbang.com
 btbtla.com
 1377x.to
-download.proxmox.com
 codeium.com
 codeiumdata.com
 follow.is
@@ -37,6 +44,7 @@ lbry.tv
 meijumi.net
 omdbapi.com
 tmdb.org
+imdb.com
 security.debian.org
 torkitty.com
 wikihow.com

@@ -1,8 +1,8 @@
 # MosDNS Rules
 tanx.com
-#mmstat.com
 beacons5.gvt3.com
 ley2022.net
+tracker.ccc.de
 tracker.publicbt.com
 public.popcorn-tracker.org
 opentracker.xyz
@@ -11,3 +11,7 @@ t.overflow.biz
 9.rarbg.com
 tracker.piratepublic.com
 lb._dns-sd._udp.xtapp.appio.cc
+playafterdark.com
+atwmcd.com
+checktop.ink
+static.stoneteam.ink
