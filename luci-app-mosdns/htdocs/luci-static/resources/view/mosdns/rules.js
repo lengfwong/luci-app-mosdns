@@ -10,104 +10,134 @@ const callRestart = rpc.declare({
 	method: 'restart'
 });
 
-const ruleFiles = {
-    'whitelist': 'whitelist.txt',
-    'blocklist': 'blocklist.txt',
-    'greylist': 'greylist.txt',
-    'ddnslist': 'ddnslist.txt',
-    'hostslist': 'hosts.txt',
-    'redirectlist': 'redirect.txt',
-    'localptrlist': 'local-ptr.txt',
-    'streamingmedialist': 'streaming.txt',
-    'gfwpluslist': 'gfwplus_list.txt',
-    'remotequerylist': 'remotelist.txt',
-    'excludegfwlist': 'excludegfw.txt',
-    'knownlist': 'knownlist.txt'
-};
-
-const descriptions = {
-    'whitelist': _('Added domain names always permit resolution using \'local DNS\' with the highest priority...'),
-    'blocklist': _('Added domain names will block DNS resolution (one domain per line, supports domain matching rules).'),
-    'greylist': _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and can add nftable sets greylist yet.'),
-    'gfwpluslist': _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and add nftable sets gfwlist.'),
-    'remotequerylist': _('Added domain names will always use \'Remote DNS\' for resolution, and return IPv4 only (one domain per line, supports domain matching rules).'),
-    'streamingmedialist': _('When enabling \'Custom Stream Media DNS\', added domains will always use the \'Streaming Media DNS server\' for resolution (one domain per line, supports domain matching rules).'),
-    'knownlist': _('Known domain lists, forward to local DNS query(one domain per line, supports domain matching rules).'),
-    'ddnslist': _('Added domain names will always use \'Local DNS\' for resolution, with a forced TTL of 5 seconds (one domain per line, supports domain matching rules).'),
-    'hostslist': _('Custom Hosts rewrite, for example: baidu.com 10.0.0.1 (one rule per line, supports domain matching rules).'),
-    'redirectlist': _('Redirecting requests for domain names. Request domain A, but return records for domain B, for example: baidu.com qq.com (one rule per line).'),
-    'localptrlist': _('Added domain names will block PTR requests (one domain per line, supports domain matching rules).'),
-    'excludegfwlist': _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, supports domain matching rules).')
-};
-
 return view.extend({
-    render() {
-        const m = new form.Map("mosdns", _("Rule Settings"),
-            _('Except for the lists defined by Sbwml, the other\'GfwPlusLists, RemoteQueryLists, Known Lists, and ExcludeGfwlists\' are only applicable to\'Custom Config\'profiles.'));
+	render() {
+		const m = new form.Map('mosdns', _('Rule Settings'),
+			_('Except for the lists defined by Sbwml, the other \'GfwPlusLists, RemoteQueryLists, Known Lists, and ExcludeGfwlists\' are only applicable to \'Custom Config\' profiles.'));
 
-        const s = m.section(form.TypedSection);
-        s.anonymous = true;
-        s.sortable = true;
+		const s = m.section(form.TypedSection);
+		s.anonymous = true;
+		s.sortable = true;
 
-        s.tab('whitelist', _('White Lists'));
-        s.tab('blocklist', _('Block Lists'));
-        s.tab('greylist', _('Grey Lists'));
-        s.tab('gfwpluslist', _('GfwPlusLists'));
-        s.tab('remotequerylist', _('RemoteQueryLists'));
-        s.tab('streamingmedialist', _('Streaming Media'));
-        s.tab('knownlist', _('Known Lists'));
-        s.tab('ddnslist', _('DDNS Lists'));
-        s.tab('hostslist', _('Hosts'));
-        s.tab('redirectlist', _('Redirect'));
-        s.tab('localptrlist', _('Block PTR'));
-        s.tab('excludegfwlist', _('ExcludeGfwlists'));
+		const handleSaveError = e => {
+			ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+		};
 
-        Object.keys(ruleFiles).forEach(tabName => {
-            const fileName = ruleFiles[tabName];
-            const filePath = `/etc/mosdns/rule/${fileName}`;
-            const desc = descriptions[tabName] || '';
+		// 整合所有 12 个规则文件及对应描述
+		const rules = [
+			{
+				name: 'whitelist',
+				title: _('White Lists'),
+				file: '/etc/mosdns/rule/whitelist.txt',
+				desc: _('Added domain names always permit resolution using \'local DNS\' with the highest priority (one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'blocklist',
+				title: _('Block Lists'),
+				file: '/etc/mosdns/rule/blocklist.txt',
+				desc: _('Added domain names will block DNS resolution (one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'greylist',
+				title: _('Grey Lists'),
+				file: '/etc/mosdns/rule/greylist.txt',
+				desc: _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and can add nftable sets greylist yet.')
+			},
+			{
+				name: 'gfwpluslist',
+				title: _('GfwPlusLists'),
+				file: '/etc/mosdns/rule/gfwplus_list.txt',
+				desc: _('Added domain names will always use \'Remote DNS\' for resolution (one domain per line, supports domain matching rules), and add nftable sets gfwlist.')
+			},
+			{
+				name: 'remotequerylist',
+				title: _('RemoteQueryLists'),
+				file: '/etc/mosdns/rule/remotelist.txt',
+				desc: _('Added domain names will always use \'Remote DNS\' for resolution, and return IPv4 only (one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'streamingmedialist',
+				title: _('Streaming Media'),
+				file: '/etc/mosdns/rule/streaming.txt',
+				desc: _('When enabling \'Custom Stream Media DNS\', added domains will always use the \'Streaming Media DNS server\' for resolution (one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'knownlist',
+				title: _('Known Lists'),
+				file: '/etc/mosdns/rule/knownlist.txt',
+				desc: _('Known domain lists, forward to local DNS query(one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'ddnslist',
+				title: _('DDNS Lists'),
+				file: '/etc/mosdns/rule/ddnslist.txt',
+				desc: _('Added domain names will always use \'Local DNS\' for resolution, with a forced TTL of 5 seconds (one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'hostslist',
+				title: _('Hosts'),
+				file: '/etc/mosdns/rule/hosts.txt',
+				desc: _('Custom Hosts rewrite, for example: baidu.com 10.0.0.1 (one rule per line, supports domain matching rules).')
+			},
+			{
+				name: 'redirectlist',
+				title: _('Redirect'),
+				file: '/etc/mosdns/rule/redirect.txt',
+				desc: _('Redirecting requests for domain names. Request domain A, but return records for domain B, for example: baidu.com qq.com (one rule per line).')
+			},
+			{
+				name: 'localptrlist',
+				title: _('Block PTR'),
+				file: '/etc/mosdns/rule/local-ptr.txt',
+				desc: _('Added domain names will block PTR requests (one domain per line, supports domain matching rules).')
+			},
+			{
+				name: 'excludegfwlist',
+				title: _('ExcludeGfwlists'),
+				file: '/etc/mosdns/rule/excludegfw.txt',
+				desc: _('Exclude Gfwlist from geodate_gfw.txt(one domain per line, supports domain matching rules).')
+			}
+		];
 
-            const o = s.taboption(tabName, form.TextValue, `_${tabName}`, null,
-                desc ? `<font color='red'>${desc}</font>` : null);
+		rules.forEach(rule => {
+			s.tab(rule.name, rule.title);
 
-            o.rows = 25;
+			const descHtml = rule.desc ? `<font color='red'>${rule.desc}</font>` : null;
+			const o = s.taboption(rule.name, form.TextValue, '_' + rule.name, null, descHtml);
+			o.rows = 25;
+			o.cfgvalue = () => fs.trimmed(rule.file).catch(() => '');
+			o.write = function(section_id, formvalue) {
+				return this.cfgvalue(section_id).then(value => {
+					if (value === formvalue) {
+						return;
+					}
+					const content = (formvalue && formvalue.trim()) ? formvalue.trim().replace(/\r\n/g, '\n') + '\n' : '';
+					return fs.write(rule.file, content).catch(handleSaveError);
+				});
+			};
+			o.remove = () => fs.write(rule.file, '').catch(handleSaveError);
+		});
 
-            o.cfgvalue = () => fs.trimmed(filePath).catch(() => "");
+		return m.render();
+	},
 
-            o.write = async (section_id, formvalue) => {
-                const value = await o.cfgvalue(section_id);
-                if (value === formvalue) return;
+	// 保留重启 MosDNS 进程的 RPC 调用逻辑（针对无 206 自动重载补丁环境）
+	async handleSaveApply(ev) {
+		const m = this.map;
 
-                const content = formvalue.trim() ? `${formvalue.trim().replace(/\r\n/g, '\n')}\n` : '';
-                return fs.write(filePath, content).catch(e => {
-                    ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-                });
-            };
+		try {
+			await this.handleSave(m);
+			const res = await callRestart();
 
-            o.remove = () => fs.write(filePath, '').catch(e => {
-                ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-            });
-        });
+			if (res?.code === 0) {
+				window.location.reload();
+			} else {
+				ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(res.output || 'Unknown error')));
+			}
+		} catch (e) {
+			ui.addNotification(null, E('p', _('Error: %s').format(e.message)));
+		}
+	},
 
-        return m.render();
-    },
-
-    async handleSaveApply(ev) {
-        const m = this.map;
-
-        try {
-            await this.handleSave(m);
-            const res = await callRestart();
-
-            if (res?.code === 0) {
-                window.location.reload();
-            } else {
-                ui.addNotification(null, E('p', _('Failed to restart mosdns: %s').format(res.output || 'Unknown error')));
-            }
-        } catch (e) {
-            ui.addNotification(null, E('p', _('Error: %s').format(e.message)));
-        }
-    },
-
-    handleReset: null
+	handleReset: null
 });
